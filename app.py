@@ -2,7 +2,10 @@ import streamlit as st
 import pandas as pd
 
 # BD NMEX
-df_base = pd.read_csv('https://storage.googleapis.com/bk_fob/nmex_fob_report.csv')
+NMEX = st.secrets["URL_NMEX"]
+NTE = st.secrets["URL_NTE"]
+
+df_base = pd.read_csv(NMEX)
 
 # Funciones para cálculo de PVP
 def calcular_pvp_func(F, R, I, M):
@@ -39,7 +42,7 @@ if ejecutar_busqueda:
     if origen == "NMEX":
         columna_fob = "FOB_NMEX"
     elif origen == "NTE":
-        df_base = pd.read_csv('https://storage.googleapis.com/bk_fob/NTE_fob_report.csv')
+        df_base = pd.read_csv(NTE)
         columna_fob = "FOB_NTE"
 
     # Función para buscar FOB
