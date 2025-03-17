@@ -32,7 +32,7 @@ input_text = st.text_area("Ingrese aquí la lista:")
 
 # Ingreso de parámetros adicionales
 tasa_remesas = st.number_input("Tasa de remesas (%)", min_value=0.0, max_value=100.0, value=65.0) / 100
-margen = st.number_input("Margen bruto post-remesas (%)", min_value=0.0, max_value=100.0, value=40.0) / 100
+margen = st.number_input("Margen bruto post-remesas (%)", min_value=0.0, max_value=100.0, value=30.0) / 100
 
 # Botón para ejecutar la búsqueda
 ejecutar_busqueda = st.button("Buscar y Calcular PVP")
