@@ -20,8 +20,16 @@ def redondeo_especial(valor):
     else:
         return int((valor - (valor % 10)) + 9)
 
+def limpiar_fob(valor):
+    if pd.isna(valor) or valor == "No encontrado":
+        return None
+    try:
+        return float(valor)
+    except ValueError:
+        return None
+    
 # Interfaz de Streamlit
-st.title("🔎 Calculadora PVP Parts")
+st.title("🔎 Calculadora PVP Parts sobre FOB")
 
 # Selección de origen de datos
 origen = st.radio("Seleccionar base de datos para la búsqueda:", ["NMEX", "NTE"], index=0)
@@ -95,3 +103,36 @@ if ejecutar_busqueda:
         if not df_no_encontrados.empty:        
             st.warning("Los siguientes PART NUMBER no se encontraron o tienen valor cero. Consulte con el proveedor:")
             st.dataframe(df_no_encontrados)
+
+st.title("Simulador PVP vs FOB")
+
+# Entrada de FOBs
+st.subheader("Ingresa hasta 5 FOBs")
+fobs = []
+for i in range(5):
+    fob = st.text_input(f"FOB {i+1}", "")
+    if fob:
+        fobs.append([fob])
+
+if fobs:
+    df_fobs = pd.DataFrame(fobs, columns=["FOB"])
+    
+    # Entrada de parámetros
+    st.subheader("Parámetros de cálculo")
+    tasa_remesas = st.number_input("Tasa de remesas (%)", min_value=0.0, max_value=500.0, value=85.0) / 100
+    margen_bruto = st.number_input("Margen bruto post-remesas (%)", min_value=0.0, max_value=150.0, value=30.0) / 100
+    incremento_maritimo = st.number_input("Índice de incremento para PVP Marítimo (%)", min_value=0.0, max_value=100.0, value=20.0) / 100
+    incremento_aereo = st.number_input("Índice de incremento para PVP Aéreo (%)", min_value=0.0, max_value=100.0, value=80.0) / 100
+    
+    # Cálculo de PVPs
+    df_fobs["PVP Marítimo"] = df_fobs["FOB"].apply(
+        lambda x: redondeo_especial(calcular_pvp_func(limpiar_fob(x), tasa_remesas, incremento_maritimo, margen_bruto))
+        if limpiar_fob(x) is not None else "No calculado"
+    )
+    df_fobs["PVP Aéreo"] = df_fobs["FOB"].apply(
+        lambda x: redondeo_especial(calcular_pvp_func(limpiar_fob(x), tasa_remesas, incremento_aereo, margen_bruto))
+        if limpiar_fob(x) is not None else "No calculado"
+    )
+    
+    st.subheader("Resultados")
+    st.dataframe(df_fobs)
