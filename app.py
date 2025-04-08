@@ -119,11 +119,11 @@ if fobs:
     
     # Entrada de parámetros
     st.subheader("Parámetros de cálculo")
-    tasa_remesas = st.number_input("Tasa de remesas (%)", min_value=0.0, max_value=500.0, value=85.0) / 100
-    margen_bruto = st.number_input("Margen bruto post-remesas (%)", min_value=0.0, max_value=150.0, value=30.0) / 100
-    incremento_maritimo = st.number_input("Índice de incremento para PVP Marítimo (%)", min_value=0.0, max_value=100.0, value=20.0) / 100
-    incremento_aereo = st.number_input("Índice de incremento para PVP Aéreo (%)", min_value=0.0, max_value=100.0, value=80.0) / 100
-    
+    tasa_remesas = st.number_input("Tasa de remesas (%)", min_value=0.0, max_value=500.0, value=85.0, key="tasa_remesas_sim") / 100
+    margen_bruto = st.number_input("Margen bruto post-remesas (%)", min_value=0.0, max_value=150.0, value=30.0, key="margen_bruto_sim") / 100
+    incremento_maritimo = st.number_input("Índice de incremento para PVP Marítimo (%)", min_value=0.0, max_value=100.0, value=20.0, key="inc_maritimo_sim") / 100
+    incremento_aereo = st.number_input("Índice de incremento para PVP Aéreo (%)", min_value=0.0, max_value=100.0, value=80.0, key="inc_aereo_sim") / 100
+
     # Cálculo de PVPs
     df_fobs["PVP Marítimo"] = df_fobs["FOB"].apply(
         lambda x: redondeo_especial(calcular_pvp_func(limpiar_fob(x), tasa_remesas, incremento_maritimo, margen_bruto))
